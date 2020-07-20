@@ -105,7 +105,15 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be mines.
         """
-        raise NotImplementedError
+        cells = self.cells
+        mines = ai.mines
+        known_mines = set()
+
+        for c in cells:
+            for mine in mines:
+                if c == mine:
+                    known_mines.add(c)
+        return known_mines
 
     def known_safes(self):
         """
