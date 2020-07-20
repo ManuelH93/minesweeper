@@ -204,8 +204,9 @@ class MinesweeperAI():
         """
         # 1) mark the cell as a move that has been made
         self.moves_made.add(cell)
-        # 2) mark the cell as safe
+        # 2) mark the cell as safe and update any sentence with cell
         self.safes.add(cell)
+        self.mark_safe(cell)
         # 3) add new sentence to knowledge base
         #   create list with all surrounding cells
         surrounding_cells = set()
@@ -227,7 +228,7 @@ class MinesweeperAI():
                 sentence_count += -1
             if cell in self.safes:
                 sentence_cells.remove(cell)
-        ai.knowledge.append(Sentence(sentence_cells, sentence_count))
+        self.knowledge.append(Sentence(sentence_cells, sentence_count))
         # 4) mark any additional cells as safe or as mines
         for sentence in self.knowledge:
             sentence_copy = copy.deepcopy(sentence)
@@ -257,3 +258,21 @@ class MinesweeperAI():
             2) are not known to be mines
         """
         raise NotImplementedError
+ai = MinesweeperAI()
+ai.knowledge = [Sentence(((6,3),(6,4)),2), Sentence(((0,1),(0,2)),0)]
+for sentence in ai.knowledge:
+    print(sentence)
+
+print(ai.moves_made)
+print(ai.safes)
+print(ai.mines)
+
+ai.mark_mine((3,6))
+ai.mark_safe((4,5))
+ai.add_knowledge((3,5),2)
+
+for sentence in ai.knowledge:
+    print(sentence)
+
+print(ai.safes)
+print(ai.mines)
