@@ -229,6 +229,14 @@ class MinesweeperAI():
                 sentence_cells.remove(cell)
         ai.knowledge.append(Sentence(sentence_cells, sentence_count))
         # 4) mark any additional cells as safe or as mines
+        for sentence in self.knowledge:
+            sentence_copy = copy.deepcopy(sentence)
+            if len(sentence_copy.cells) == sentence_copy.count:
+                for cell in sentence_copy.cells:
+                    self.mark_mine(cell)
+            if sentence_copy.count == 0:
+                for cell in sentence_copy.cells:
+                    self.mark_safe(cell)                
 
     def make_safe_move(self):
         """
