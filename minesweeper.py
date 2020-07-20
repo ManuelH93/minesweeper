@@ -119,7 +119,15 @@ class Sentence():
         """
         Returns the set of all cells in self.cells known to be safe.
         """
-        raise NotImplementedError
+        cells = self.cells
+        safes = ai.safes
+        known_safes = set()
+
+        for c in cells:
+            for safe in safes:
+                if c == safe:
+                    known_safes.add(c)
+        return known_safes
 
     def mark_mine(self, cell):
         """
