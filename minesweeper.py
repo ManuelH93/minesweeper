@@ -235,15 +235,15 @@ class MinesweeperAI():
             if len(cells_changed) == 0:
                 counter += 1
         #   remove empty sentences to keep knowledge base tidy
-        counter = 0
+        tracker = 0
         for sentence in self.knowledge:
             if len(sentence.cells) == 0:
-                counter += 1
-        while counter != 0:
+                tracker += 1
+        while tracker != 0:
             for sentence in ai.knowledge:
                 if len(sentence.cells) == 0:
                     ai.knowledge.remove(sentence)
-                    counter += -1
+                    tracker += -1
         # 5) add new sentences to knowledge base    
         counter = 0
         while counter == 0:
