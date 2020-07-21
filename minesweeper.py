@@ -222,11 +222,18 @@ class MinesweeperAI():
                 sentence_cells.remove(cell)
         self.knowledge.append(Sentence(sentence_cells, sentence_count))
         # 4) mark any additional cells as safe or as mines
-        for sentence in self.knowledge:
-            for cell in sentence.known_mines():
-                self.mark_mine(cell)
-            for cell in sentence.known_safes():
-                self.mark_safe(cell)
+        counter = 0
+        while counter == 0:
+            cells_changed = set()
+            for sentence in self.knowledge:
+                for cell in sentence.known_mines():
+                    self.mark_mine(cell)
+                    cells_changed.add(cell)
+                for cell in sentence.known_safes():
+                    self.mark_safe(cell)
+                    cells_changed.add(cell)
+            if len(cells_changed) == 0:
+                counter += 1
         #   remove empty sentences to keep knowledge base tidy
         counter = 0
         for sentence in self.knowledge:
@@ -237,6 +244,19 @@ class MinesweeperAI():
                 if len(sentence.cells) == 0:
                     ai.knowledge.remove(sentence)
                     counter += -1
+        # 5) add new sentences to knowledge base 
+        new_sentences = []
+        for sentence1 in self.knowledge:
+            cells1 = sentence1.cells
+            for sentence2 in self.knowledge:
+                cells2 = sentence2.cells
+                if cells1.issubset(cells2) and cells1 != cells2:
+                    cells = cells2 - cells1
+                    count = sentence2.count - sentence1.count
+                    new_sentences.append(Sentence(cells, count))
+        
+        for sentence in new_sentences:
+            self.knowledge.append(sentence)
 
     def make_safe_move(self):
         """
@@ -257,3 +277,10 @@ class MinesweeperAI():
             2) are not known to be mines
         """
         raise NotImplementedError
+ai = MinesweeperAI()
+ai.knowledge = [Sentence(((1,2),(1,3),(0,4),(0,3)),1), Sentence(((0,1),(0,2),(0,4),(0,3)),2),Sentence(((0,2),(0,4)),1)]
+
+ai.add_knowledge((6,4),3)
+
+for sentence in ai.knowledge:
+    print(sentence)
