@@ -244,19 +244,27 @@ class MinesweeperAI():
                 if len(sentence.cells) == 0:
                     ai.knowledge.remove(sentence)
                     counter += -1
-        # 5) add new sentences to knowledge base 
-        new_sentences = []
-        for sentence1 in self.knowledge:
-            cells1 = sentence1.cells
-            for sentence2 in self.knowledge:
-                cells2 = sentence2.cells
-                if cells1.issubset(cells2) and cells1 != cells2:
-                    cells = cells2 - cells1
-                    count = sentence2.count - sentence1.count
-                    new_sentences.append(Sentence(cells, count))
-        
-        for sentence in new_sentences:
-            self.knowledge.append(sentence)
+        # 5) add new sentences to knowledge base    
+        counter = 0
+        while counter == 0:
+            new_sentences = []
+            for sentence1 in self.knowledge:
+                cells1 = sentence1.cells
+                for sentence2 in self.knowledge:
+                    cells2 = sentence2.cells
+                    if cells1.issubset(cells2) and cells1 != cells2:
+                        cells = cells2 - cells1
+                        count = sentence2.count - sentence1.count
+                        new_sentences.append(Sentence(cells, count))
+            changes_made = 0
+            for sentence in new_sentences:
+                if sentence in ai.knowledge:
+                    continue
+                else:
+                    ai.knowledge.append(sentence)
+                    changes_made += 1
+            if changes_made == 0:
+                counter += 1
 
     def make_safe_move(self):
         """
@@ -277,10 +285,3 @@ class MinesweeperAI():
             2) are not known to be mines
         """
         raise NotImplementedError
-ai = MinesweeperAI()
-ai.knowledge = [Sentence(((1,2),(1,3),(0,4),(0,3)),1), Sentence(((0,1),(0,2),(0,4),(0,3)),2),Sentence(((0,2),(0,4)),1)]
-
-ai.add_knowledge((6,4),3)
-
-for sentence in ai.knowledge:
-    print(sentence)
