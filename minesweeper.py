@@ -232,21 +232,7 @@ class MinesweeperAI():
                 for cell in sentence.known_safes():
                     self.mark_safe(cell)
                     cells_changed.add(cell)
-            if len(cells_changed) == 0:
-                counter += 1
-        #   remove empty sentences to keep knowledge base tidy
-        tracker = 0
-        for sentence in self.knowledge:
-            if len(sentence.cells) == 0:
-                tracker += 1
-        while tracker != 0:
-            for sentence in ai.knowledge:
-                if len(sentence.cells) == 0:
-                    ai.knowledge.remove(sentence)
-                    tracker += -1
         # 5) add new sentences to knowledge base    
-        counter = 0
-        while counter == 0:
             new_sentences = []
             for sentence1 in self.knowledge:
                 cells1 = sentence1.cells
@@ -258,13 +244,29 @@ class MinesweeperAI():
                         new_sentences.append(Sentence(cells, count))
             changes_made = 0
             for sentence in new_sentences:
-                if sentence in ai.knowledge:
+                if sentence in self.knowledge:
                     continue
                 else:
-                    ai.knowledge.append(sentence)
+                    self.knowledge.append(sentence)
                     changes_made += 1
-            if changes_made == 0:
+            if len(cells_changed) == 0 and changes_made == 0:
                 counter += 1
+        # remove empty sentences to keep knowledge base tidy
+        tracker = 0
+        for sentence in self.knowledge:
+            if len(sentence.cells) == 0:
+                tracker += 1
+        while tracker != 0:
+            for sentence in self.knowledge:
+                if len(sentence.cells) == 0:
+                    self.knowledge.remove(sentence)
+                    tracker += -1
+        # remove duplicates in knowledge base
+        no_duplicates = []
+        for sentence in self.knowledge:
+            if sentence not in no_duplicates:
+                no_duplicates.append(sentence)
+        self.knowledge = no_duplicates
 
     def make_safe_move(self):
         """
