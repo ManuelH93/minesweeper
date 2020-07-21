@@ -224,6 +224,7 @@ class MinesweeperAI():
         # 4) mark any additional cells as safe or as mines
         counter = 0
         while counter == 0:
+            # Keep track of cells marked as mines or as safes
             cells_changed = set()
             for sentence in self.knowledge:
                 for cell in sentence.known_mines():
@@ -242,6 +243,7 @@ class MinesweeperAI():
                         cells = cells2 - cells1
                         count = sentence2.count - sentence1.count
                         new_sentences.append(Sentence(cells, count))
+            # Kepp track of new sentences added to knowledge
             changes_made = 0
             for sentence in new_sentences:
                 if sentence in self.knowledge:
@@ -249,6 +251,7 @@ class MinesweeperAI():
                 else:
                     self.knowledge.append(sentence)
                     changes_made += 1
+            # Only if no more changes made to knowledge do we break the loop
             if len(cells_changed) == 0 and changes_made == 0:
                 counter += 1
         # remove empty sentences to keep knowledge base tidy
@@ -303,4 +306,3 @@ class MinesweeperAI():
             return None
         else:
             return random.choice(tuple(possible_moves))
-            
