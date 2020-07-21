@@ -227,6 +227,16 @@ class MinesweeperAI():
                 self.mark_mine(cell)
             for cell in sentence.known_safes():
                 self.mark_safe(cell)
+        #   remove empty sentences to keep knowledge base tidy
+        counter = 0
+        for sentence in self.knowledge:
+            if len(sentence.cells) == 0:
+                counter += 1
+        while counter != 0:
+            for sentence in ai.knowledge:
+                if len(sentence.cells) == 0:
+                    ai.knowledge.remove(sentence)
+                    counter += -1
 
     def make_safe_move(self):
         """
